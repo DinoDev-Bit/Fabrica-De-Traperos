@@ -176,16 +176,20 @@
 
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
+            
+            const token = getCookie('token');
+            const usuario = getCookie('usuario');
+            
+            // Si ya hay token, lo redirigimos automáticamente al dashboard para que no tenga que iniciar de nuevo
+            if (token && usuario && !urlParams.get('registered')) {
+                window.location.replace('dashboard.html');
+                return; // Evita que siga cargando
+            }
+            
+            // Si acaba de registrarse, mostramos el mensaje
             if (urlParams.get('registered') === 'true') {
                 mensajeDiv.style.color = '#10b981';
                 mensajeDiv.textContent = '¡Cuenta creada! Ya puedes iniciar sesión con tu correo y contraseña.';
-            }
-
-            const token = getCookie('token');
-            const usuario = getCookie('usuario');
-            if (token && usuario && !urlParams.get('registered')) {
-                mensajeDiv.style.color = 'green';
-                mensajeDiv.textContent = `Ya tienes sesión activa como ${usuario}.`;
             }
         };
 
