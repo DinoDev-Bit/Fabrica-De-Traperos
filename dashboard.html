@@ -113,10 +113,8 @@
 </head>
 <body>
 
-    <!-- Pantalla de carga mientras se valida el token -->
     <div id="loading">Verificando sesión...</div>
 
-    <!-- Contenido principal protegido -->
     <div class="dashboard-card" id="dashboard-content">
         <div class="welcome-div" id="welcome-message">
             ¡Bienvenido!
@@ -126,22 +124,19 @@
             <img id="user-avatar" src="" alt="Avatar del usuario">
             <p><strong>Nombre completo:</strong> <span id="user-name"></span></p>
             <p><strong>Email:</strong> <span id="user-email"></span></p>
-            <p><strong>Usuario:</strong> <span id="user-username"></span></p>
+            <p><strong>Rol / Usuario:</strong> <span id="user-username"></span></p>
         </div>
 
         <button id="logout-btn">Cerrar sesión</button>
     </div>
 
     <script>
-        // 1. Revisar si existe token
         const token = localStorage.getItem('token');
 
         if (!token) {
-            // Si NO hay token en localStorage, el usuario no está autenticado.
-            // Redirigimos inmediatamente a la página de login.
             window.location.replace('index.html');
         } else if (token.startsWith('local_token_')) {
-            // --- NUEVA LÓGICA PARA USUARIOS LOCALES ---
+            // --- LÓGICA LOCAL ---
             const localUser = JSON.parse(localStorage.getItem('localUserData'));
             
             document.getElementById('loading').style.display = 'none';
@@ -149,19 +144,11 @@
 
             document.getElementById('welcome-message').textContent = `¡Hola, ${localUser.firstName}! 🎉 (Cuenta Local)`;
             document.getElementById('user-name').textContent = `${localUser.firstName} ${localUser.lastName}`;
-            document.getElementById('user-email').textContent = 'usuario_local@app.com'; 
-            document.getElementById('user-username').textContent = localUser.username;
+            document.getElementById('user-email').textContent = localUser.email; // Mostramos el CORREO que registró
+            document.getElementById('user-username').textContent = 'Usuario Local'; 
             document.getElementById('user-avatar').src = localUser.image;
         } else {
-            // 2. Hacer fetch a la ruta protegida /auth/me
-            
-            // --- Explicación de Authorization: Bearer ---
-            // "Bearer" significa "portador" en inglés.
-            // Al enviar este encabezado, le estamos mostrando nuestra "credencial digital" al servidor.
-            // Es el equivalente a mostrar tu pulsera VIP en la entrada de un concierto.
-            // Si el token es inválido, falso, o ya caducó (vencido), el servidor nos responderá 
-            // con un Error 401 (Unauthorized) y no nos dará la información del usuario.
-            
+            // --- LÓGICA DUMMYJSON API ---
             fetch('https://dummyjson.com/auth/me', {
                 method: 'GET',
                 headers: {
@@ -170,19 +157,14 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    // Si responde 401 o cualquier error, lanzamos una excepción para caer en el catch
                     throw new Error('Token inválido o expirado');
                 }
                 return response.json();
             })
             .then(data => {
-                // 3. Mostrar en pantalla los datos que devuelve la API
-                
-                // Ocultar mensaje de carga y mostrar el panel principal
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('dashboard-content').style.display = 'block';
 
-                // Inyectar la información en el HTML
                 document.getElementById('welcome-message').textContent = `¡Hola, ${data.firstName}! 🎉`;
                 document.getElementById('user-name').textContent = `${data.firstName} ${data.lastName}`;
                 document.getElementById('user-email').textContent = data.email;
@@ -190,28 +172,21 @@
                 document.getElementById('user-avatar').src = data.image;
             })
             .catch(error => {
-                // Si llegamos aquí, es porque el token no sirvió o hubo error de red
                 console.error("Error de autenticación:", error);
                 alert("Tu sesión ha expirado o no es válida. Por favor, inicia sesión nuevamente.");
                 
-                // Limpiamos los datos inservibles
                 localStorage.removeItem('token');
                 localStorage.removeItem('usuario');
                 
-                // Redirigimos al login
                 window.location.replace('index.html');
             });
         }
 
-        // 4. Lógica para el botón de "Cerrar sesión"
         document.getElementById('logout-btn').addEventListener('click', () => {
-            // Eliminamos la "llave" del usuario y los datos locales simulados
             localStorage.removeItem('token');
             localStorage.removeItem('usuario');
             localStorage.removeItem('localUserData');
             
-            
-            // Lo enviamos de regreso a la entrada
             window.location.replace('index.html');
         });
     </script>

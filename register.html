@@ -55,9 +55,10 @@
                 </div>
             </div>
 
+            <!-- CAMBIO AQUÍ: Ahora pedimos Correo electrónico -->
             <div class="input-group">
-                <label for="username">Usuario</label>
-                <input type="text" id="username" required>
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" required>
             </div>
 
             <div class="input-group">
@@ -84,28 +85,28 @@
 
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
-            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
             // Obtenemos los usuarios guardados previamente (nuestra base de datos en localStorage)
             let localUsers = JSON.parse(localStorage.getItem('localUsers')) || [];
 
-            // Verificamos si el usuario ya existe
-            const userExists = localUsers.find(user => user.username === username);
+            // Verificamos si el usuario ya existe por CORREO
+            const userExists = localUsers.find(user => user.email === email);
             if (userExists) {
                 mensajeDiv.style.color = '#ef4444';
-                mensajeDiv.textContent = 'Este usuario ya existe. Elige otro.';
+                mensajeDiv.textContent = 'Este correo ya está registrado. Elige otro.';
                 return;
             }
 
-            // Creamos el nuevo usuario con la estructura esperada
+            // Creamos el nuevo usuario guardando el email
             const newUser = {
                 firstName,
                 lastName,
-                username,
+                email, // Se guarda el correo en la base local
                 password,
-                // Usamos un avatar generado aleatoriamente para el usuario local
-                image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
+                // Usamos un avatar generado aleatoriamente en base a su correo
+                image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
             };
 
             // Guardamos el usuario
