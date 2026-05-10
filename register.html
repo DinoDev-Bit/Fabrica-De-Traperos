@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta</title>
+    <style>
+        /* Mismos estilos base que index.html */
+        body {
+            background-color: #1a1a2e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .register-card {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 { text-align: center; margin-top: 0; margin-bottom: 1.5rem; color: #1a1a2e; }
+        .input-group { margin-bottom: 1.2rem; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #444; }
+        .input-group input { width: 100%; padding: 0.8rem; border: 1.5px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 1rem; transition: border-color 0.3s; }
+        .input-group input:focus { outline: none; border-color: #0f3460; }
+        .row { display: flex; gap: 10px; }
+        .row .input-group { flex: 1; }
+        button { width: 100%; padding: 0.8rem; background-color: #0f3460; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: bold; margin-top: 0.5rem; transition: background-color 0.3s; }
+        button:hover { background-color: #e94560; }
+        #mensaje { margin-top: 1.2rem; text-align: center; font-weight: 600; font-size: 0.9rem; padding: 0.5rem; min-height: 20px; }
+        .links { text-align: center; margin-top: 1rem; font-size: 0.9rem; }
+        .links a { color: #0f3460; text-decoration: none; font-weight: bold; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <h2>Crear Cuenta Local</h2>
+        <form id="register-form">
+            <div class="row">
+                <div class="input-group">
+                    <label for="firstName">Nombre</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="input-group">
+                    <label for="lastName">Apellido</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" required>
+            </div>
+
+            <button type="submit">Registrarme</button>
+        </form>
+        
+        <div id="mensaje"></div>
+        
+        <div class="links">
+            ¿Ya tienes cuenta? <a href="index.html">Inicia sesión aquí</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('register-form');
+        const mensajeDiv = document.getElementById('mensaje');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            // Obtenemos los usuarios guardados previamente (nuestra base de datos en localStorage)
+            let localUsers = JSON.parse(localStorage.getItem('localUsers')) || [];
+
+            // Verificamos si el usuario ya existe
+            const userExists = localUsers.find(user => user.username === username);
+            if (userExists) {
+                mensajeDiv.style.color = '#ef4444';
+                mensajeDiv.textContent = 'Este usuario ya existe. Elige otro.';
+                return;
+            }
+
+            // Creamos el nuevo usuario con la estructura esperada
+            const newUser = {
+                firstName,
+                lastName,
+                username,
+                password,
+                // Usamos un avatar generado aleatoriamente para el usuario local
+                image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
+            };
+
+            // Guardamos el usuario
+            localUsers.push(newUser);
+            localStorage.setItem('localUsers', JSON.stringify(localUsers));
+
+            mensajeDiv.style.color = '#10b981';
+            mensajeDiv.textContent = '¡Cuenta creada con éxito! Redirigiendo al login...';
+
+            setTimeout(() => {
+                window.location.href = 'index.html?registered=true';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

@@ -150,7 +150,11 @@
         <!-- div vacío donde inyectaremos texto (éxito, error, carga) usando JavaScript -->
         <div id="mensaje"></div>
         
-        <div class="hint">Usuario de prueba: emilys / emilyspass</div>
+        <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+            ¿No tienes cuenta? <a href="register.html" style="color: #0f3460; font-weight: bold; text-decoration: none;">Crea una aquí</a>
+        </div>
+        
+        <div class="hint">Usuario de prueba (DummyJSON): emilys / emilyspass</div>
     </div>
 
     <script>
@@ -177,9 +181,16 @@
 
         // Al cargar la página, revisamos si ya hay un token guardado en el navegador (persistencia)
         window.onload = () => {
+            // Si venimos de crear cuenta, mostramos un aviso
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                mensajeDiv.style.color = '#10b981';
+                mensajeDiv.textContent = '¡Cuenta creada! Ya puedes iniciar sesión con tu nuevo usuario.';
+            }
+
             const token = localStorage.getItem('token');
             const usuario = localStorage.getItem('usuario');
-            if (token && usuario) {
+            if (token && usuario && !urlParams.get('registered')) {
                 mensajeDiv.style.color = 'green';
                 mensajeDiv.textContent = `Ya tienes sesión activa como ${usuario}.`;
             }
@@ -210,6 +221,31 @@
                 return; // Cortamos la ejecución aquí, no hacemos la petición
             }
 
+            // --- NUEVA LÓGICA: Buscar primero en nuestra base local ---
+            const localUsers = JSON.parse(localStorage.getItem('localUsers')) || [];
+            const localUserMatch = localUsers.find(u => u.username === username && u.password === password);
+
+            if (localUserMatch) {
+                mensajeDiv.style.color = '#10b981'; // Verde
+                mensajeDiv.textContent = `¡Login local exitoso! Bienvenido ${localUserMatch.firstName}`;
+                
+                // Guardamos la sesión local
+                localStorage.setItem('token', 'local_token_' + localUserMatch.username);
+                localStorage.setItem('usuario', `${localUserMatch.firstName} ${localUserMatch.lastName}`);
+                localStorage.setItem('localUserData', JSON.stringify(localUserMatch));
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Conectando...';
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+                return; // Cortamos la ejecución, no llamamos a DummyJSON
+            }
+            // --- FIN NUEVA LÓGICA ---
+
+            // Si no es un usuario local, intentamos con DummyJSON
             // Mostramos estado de carga mientras esperamos la respuesta de la API
             mensajeDiv.style.color = '#555';
             mensajeDiv.textContent = 'Cargando...';

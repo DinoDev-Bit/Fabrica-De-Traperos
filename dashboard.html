@@ -140,6 +140,18 @@
             // Si NO hay token en localStorage, el usuario no está autenticado.
             // Redirigimos inmediatamente a la página de login.
             window.location.replace('index.html');
+        } else if (token.startsWith('local_token_')) {
+            // --- NUEVA LÓGICA PARA USUARIOS LOCALES ---
+            const localUser = JSON.parse(localStorage.getItem('localUserData'));
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+
+            document.getElementById('welcome-message').textContent = `¡Hola, ${localUser.firstName}! 🎉 (Cuenta Local)`;
+            document.getElementById('user-name').textContent = `${localUser.firstName} ${localUser.lastName}`;
+            document.getElementById('user-email').textContent = 'usuario_local@app.com'; 
+            document.getElementById('user-username').textContent = localUser.username;
+            document.getElementById('user-avatar').src = localUser.image;
         } else {
             // 2. Hacer fetch a la ruta protegida /auth/me
             
@@ -193,9 +205,11 @@
 
         // 4. Lógica para el botón de "Cerrar sesión"
         document.getElementById('logout-btn').addEventListener('click', () => {
-            // Eliminamos la "llave" del usuario
+            // Eliminamos la "llave" del usuario y los datos locales simulados
             localStorage.removeItem('token');
             localStorage.removeItem('usuario');
+            localStorage.removeItem('localUserData');
+            
             
             // Lo enviamos de regreso a la entrada
             window.location.replace('index.html');
