@@ -131,13 +131,30 @@
     </div>
 
     <script>
-        const token = localStorage.getItem('token');
+        // --- FUNCIONES DE COOKIES ---
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+            }
+            return null;
+        }
+
+        function eraseCookie(name) {   
+            document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+        // -----------------------------
+
+        const token = getCookie('token');
 
         if (!token) {
             window.location.replace('index.html');
         } else if (token.startsWith('local_token_')) {
             // --- LÓGICA LOCAL ---
-            const localUser = JSON.parse(localStorage.getItem('localUserData'));
+            const localUser = JSON.parse(getCookie('localUserData'));
             
             document.getElementById('loading').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
@@ -175,17 +192,17 @@
                 console.error("Error de autenticación:", error);
                 alert("Tu sesión ha expirado o no es válida. Por favor, inicia sesión nuevamente.");
                 
-                localStorage.removeItem('token');
-                localStorage.removeItem('usuario');
+                eraseCookie('token');
+                eraseCookie('usuario');
                 
                 window.location.replace('index.html');
             });
         }
 
         document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
-            localStorage.removeItem('localUserData');
+            eraseCookie('token');
+            eraseCookie('usuario');
+            eraseCookie('localUserData');
             
             window.location.replace('index.html');
         });

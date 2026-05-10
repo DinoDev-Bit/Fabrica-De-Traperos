@@ -144,6 +144,29 @@
     </div>
 
     <script>
+        // --- FUNCIONES DE COOKIES ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+            }
+            return null;
+        }
+        // -----------------------------
+
         const form = document.querySelector('#login-form');
         const usernameInput = document.querySelector('#username');
         const passwordInput = document.querySelector('#password');
@@ -158,8 +181,8 @@
                 mensajeDiv.textContent = '¡Cuenta creada! Ya puedes iniciar sesión con tu correo y contraseña.';
             }
 
-            const token = localStorage.getItem('token');
-            const usuario = localStorage.getItem('usuario');
+            const token = getCookie('token');
+            const usuario = getCookie('usuario');
             if (token && usuario && !urlParams.get('registered')) {
                 mensajeDiv.style.color = 'green';
                 mensajeDiv.textContent = `Ya tienes sesión activa como ${usuario}.`;
@@ -188,9 +211,9 @@
                 mensajeDiv.style.color = '#10b981';
                 mensajeDiv.textContent = `¡Login local exitoso! Bienvenido ${localUserMatch.firstName}`;
                 
-                localStorage.setItem('token', 'local_token_' + localUserMatch.email);
-                localStorage.setItem('usuario', `${localUserMatch.firstName} ${localUserMatch.lastName}`);
-                localStorage.setItem('localUserData', JSON.stringify(localUserMatch));
+                setCookie('token', 'local_token_' + localUserMatch.email, 7);
+                setCookie('usuario', `${localUserMatch.firstName} ${localUserMatch.lastName}`, 7);
+                setCookie('localUserData', JSON.stringify(localUserMatch), 7);
 
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Conectando...';
@@ -224,8 +247,8 @@
                     mensajeDiv.style.color = '#10b981';
                     mensajeDiv.textContent = `¡Login exitoso! Token recibido: ${shortToken}... (HTTP 200)`;
                     
-                    localStorage.setItem('token', data.accessToken);
-                    localStorage.setItem('usuario', `${data.firstName} ${data.lastName}`);
+                    setCookie('token', data.accessToken, 7);
+                    setCookie('usuario', `${data.firstName} ${data.lastName}`, 7);
 
                     setTimeout(() => {
                         mensajeDiv.textContent = `Bienvenido ${data.firstName}! Redirigiendo...`;
