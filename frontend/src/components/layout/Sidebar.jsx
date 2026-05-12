@@ -64,10 +64,7 @@ export const Sidebar = () => {
 
         <nav className="space-y-1">
           {SECTIONS.map((section) => {
-            const hasAccess = section.roles.includes(user.role);
             const isActive = location.pathname === section.path;
-
-            if (!hasAccess) return null;
 
             const Icon = section.icon;
 
