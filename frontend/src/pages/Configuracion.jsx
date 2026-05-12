@@ -19,6 +19,34 @@ export const Configuracion = () => {
     }
   }, [user]);
 
+  const handleImageUpload = (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+      alert("La imagen es muy pesada. Por favor sube una imagen menor a 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImage(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        handleImageUpload(file);
+        break;
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSuccess(false);
@@ -150,18 +178,21 @@ export const Configuracion = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-1.5">Enlace del Avatar (URL)</label>
-                  <div className="relative">
-                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                    <input
-                      type="url"
-                      value={image}
-                      onChange={(e) => setImage(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2.5 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-slate-900/50 text-white placeholder-slate-500 text-sm"
-                      placeholder="https://ejemplo.com/mifoto.jpg"
+                  <label className="block text-sm font-bold text-slate-300 mb-1.5">Foto de Perfil (Avatar)</label>
+                  <div 
+                    onPaste={handlePaste}
+                    className="border-2 border-dashed border-slate-600 hover:border-blue-500 bg-slate-900/50 rounded-xl p-6 text-center transition-colors cursor-pointer group relative"
+                  >
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => e.target.files && handleImageUpload(e.target.files[0])}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
+                    <ImageIcon className="mx-auto text-slate-500 mb-2 group-hover:text-blue-400 transition-colors" size={24} />
+                    <p className="text-sm font-bold text-slate-300">Haz clic para subir un archivo</p>
+                    <p className="text-xs text-slate-500 mt-1">O presiona <kbd className="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">Ctrl+V</kbd> para pegar una imagen</p>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1.5">Pega el enlace directo a una imagen (JPG, PNG) para usarla como tu avatar.</p>
                 </div>
               </div>
 

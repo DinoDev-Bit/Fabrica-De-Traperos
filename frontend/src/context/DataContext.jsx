@@ -67,8 +67,30 @@ export const DataProvider = ({ children }) => {
   };
 
   // Funciones de Pedidos
+  const getEstado = (stock) => {
+    const s = parseInt(stock);
+    if (s <= 10) return 'Crítico';
+    if (s <= 50) return 'Stock Bajo';
+    return 'En Stock';
+  };
+
   const addPedido = (pedido) => {
     setPedidos(prev => [{ ...pedido, id: `PD-${Date.now().toString().slice(-4)}` }, ...prev]);
+    
+    // Descontar stock de los productos vendidos
+    if (pedido.items && pedido.items.length > 0) {
+      setProductos(prevProductos => 
+        prevProductos.map(p => {
+          const itemVendido = pedido.items.find(i => i.producto.id === p.id);
+          if (itemVendido) {
+            const nuevoStock = Math.max(0, p.stock - itemVendido.cantidad);
+            return { ...p, stock: nuevoStock, estado: getEstado(nuevoStock) };
+          }
+          return p;
+        })
+      );
+    }
+
     addNotificacion(`Nuevo pedido creado para: ${pedido.cliente}`, 'success');
   };
 

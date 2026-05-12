@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Plus, Edit, Trash2, Filter, X, Save } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Filter, X, Save, PlusCircle } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
 export const Catalogo = () => {
@@ -65,6 +65,16 @@ export const Catalogo = () => {
   const handleDelete = (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       deleteProducto(id);
+    }
+  };
+
+  const handleAddStock = (prod) => {
+    const amount = window.prompt(`¿Cuántas unidades adicionales de "${prod.nombre}" llegaron?`, "0");
+    const val = parseInt(amount);
+    if (!isNaN(val) && val > 0) {
+      const nuevoStock = prod.stock + val;
+      const productData = { ...prod, stock: nuevoStock, estado: getEstado(nuevoStock) };
+      updateProducto(prod.id, productData);
     }
   };
 
@@ -168,13 +178,22 @@ export const Catalogo = () => {
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
                         <button 
+                          onClick={() => handleAddStock(prod)}
+                          title="Añadir Stock"
+                          className="p-1.5 text-slate-400 hover:text-emerald-400 rounded-md hover:bg-emerald-500/10 transition-colors"
+                        >
+                          <PlusCircle size={18} />
+                        </button>
+                        <button 
                           onClick={() => handleOpenModal(prod)}
+                          title="Editar"
                           className="p-1.5 text-slate-400 hover:text-blue-400 rounded-md hover:bg-blue-500/10 transition-colors"
                         >
                           <Edit size={18} />
                         </button>
                         <button 
                           onClick={() => handleDelete(prod.id)}
+                          title="Eliminar"
                           className="p-1.5 text-slate-400 hover:text-red-400 rounded-md hover:bg-red-500/10 transition-colors"
                         >
                           <Trash2 size={18} />
