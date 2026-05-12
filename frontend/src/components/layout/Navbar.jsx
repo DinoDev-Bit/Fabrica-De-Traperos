@@ -1,8 +1,8 @@
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-8">
@@ -36,6 +36,15 @@ export const Navbar = () => {
             </div>
           )}
         </div>
+
+        <button 
+          onClick={logout}
+          className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-sm font-bold transition-colors ml-2"
+          title="Cerrar Sesión"
+        >
+          <LogOut size={16} />
+          <span className="hidden sm:inline">Salir</span>
+        </button>
       </div>
     </header>
   );
