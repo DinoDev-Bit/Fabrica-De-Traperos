@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Save, Plus, Trash2 } from 'lucide-react';
-import { useData } from '../../context/DataContext';
+import { useData } from '../context/DataContext';
 
 export const NuevoPedido = () => {
   const { productos, addPedido } = useData();

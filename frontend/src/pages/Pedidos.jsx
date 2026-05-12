@@ -1,5 +1,5 @@
 import { CheckCircle2, Clock, AlertCircle, Eye } from 'lucide-react';
-import { useData } from '../../context/DataContext';
+import { useData } from '../context/DataContext';
 
 export const Pedidos = () => {
   const { pedidos } = useData();

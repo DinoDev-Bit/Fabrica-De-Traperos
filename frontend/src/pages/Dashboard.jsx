@@ -1,6 +1,6 @@
 import { ShoppingBag, TrendingUp, Clock, CheckCircle } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useData } from '../../context/DataContext';
+import { useData } from '../context/DataContext';
 
 export const Dashboard = () => {
   const { pedidos, productos } = useData();

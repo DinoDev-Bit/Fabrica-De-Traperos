@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Search, Plus, Edit, Trash2, Filter, X, Save } from 'lucide-react';
-import { useData } from '../../context/DataContext';
+import { useData } from '../context/DataContext';
 
 export const Catalogo = () => {
   const { productos, addProducto, updateProducto, deleteProducto } = useData();
