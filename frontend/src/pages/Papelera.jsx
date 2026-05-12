@@ -12,9 +12,8 @@ export const Papelera = () => {
 
   const handleAuth = (e) => {
     e.preventDefault();
-    // La contraseña esperada: Si usó API es la que guardemos, si usó Google por defecto 'admin'
-    const expectedPassword = user.password || 'admin';
-    if (password === expectedPassword || password === 'emilyspass') {
+    // La contraseña esperada ahora es fija según petición del usuario
+    if (password === 'Diosesbueno') {
       setIsAuthenticated(true);
       setError('');
     } else {
