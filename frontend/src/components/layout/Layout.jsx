@@ -8,8 +8,8 @@ export const Layout = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#0f172a]">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
   }
@@ -19,7 +19,7 @@ export const Layout = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 overflow-hidden">
+    <div className="flex min-h-screen bg-[#0f172a] text-slate-200 overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col max-h-screen overflow-hidden">
         <Navbar />

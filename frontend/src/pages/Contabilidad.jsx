@@ -1,74 +1,39 @@
-import { DollarSign, FileText, Download } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const data = [
-  { name: 'Ene', ingresos: 4000, gastos: 2400 },
-  { name: 'Feb', ingresos: 3000, gastos: 1398 },
-  { name: 'Mar', ingresos: 2000, gastos: 9800 },
-  { name: 'Abr', ingresos: 2780, gastos: 3908 },
-  { name: 'May', ingresos: 1890, gastos: 4800 },
-  { name: 'Jun', ingresos: 2390, gastos: 3800 },
-  { name: 'Jul', ingresos: 3490, gastos: 4300 },
-];
-
 export const Contabilidad = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Contabilidad y Finanzas</h1>
-        <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
-          <Download size={18} /> Exportar Reporte
+        <h1 className="text-2xl font-bold text-white">Contabilidad y Finanzas</h1>
+        <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors border border-blue-500/50">
+          Descargar Balance
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-2 text-gray-500 font-medium">
-            <DollarSign size={20} className="text-emerald-500" /> Ingresos (Mes)
-          </div>
-          <p className="text-3xl font-bold text-gray-800">$12,450,000</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50 border-t-4 border-t-emerald-500">
+          <p className="text-slate-400 font-medium mb-1">Ingresos del Mes</p>
+          <h3 className="text-3xl font-bold text-white mb-2">$15,450,000</h3>
+          <p className="text-sm font-bold text-emerald-400">+12% vs mes anterior</p>
         </div>
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-2 text-gray-500 font-medium">
-            <FileText size={20} className="text-red-500" /> Gastos (Mes)
-          </div>
-          <p className="text-3xl font-bold text-gray-800">$4,120,000</p>
+        <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50 border-t-4 border-t-red-500">
+          <p className="text-slate-400 font-medium mb-1">Gastos Operativos</p>
+          <h3 className="text-3xl font-bold text-white mb-2">$4,230,000</h3>
+          <p className="text-sm font-bold text-red-400">+5% vs mes anterior</p>
         </div>
-        <div className="bg-primary text-white p-5 rounded-xl shadow-sm">
-          <div className="flex items-center gap-3 mb-2 font-medium opacity-80">
-            <DollarSign size={20} /> Balance Neto
-          </div>
-          <p className="text-3xl font-bold">$8,330,000</p>
+        <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50 border-t-4 border-t-blue-500">
+          <p className="text-slate-400 font-medium mb-1">Margen Neto</p>
+          <h3 className="text-3xl font-bold text-white mb-2">$11,220,000</h3>
+          <p className="text-sm font-bold text-emerald-400">72.6% Rentabilidad</p>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">Ingresos vs Gastos</h2>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorIngresos" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorGastos" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="name" stroke="#8884d8" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#8884d8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
-                formatter={(value) => [`$${value}`, 'Monto']}
-              />
-              <Area type="monotone" dataKey="ingresos" stroke="#10b981" fillOpacity={1} fill="url(#colorIngresos)" />
-              <Area type="monotone" dataKey="gastos" stroke="#ef4444" fillOpacity={1} fill="url(#colorGastos)" />
-            </AreaChart>
-          </ResponsiveContainer>
+      <div className="bg-slate-800 rounded-xl shadow-lg border border-slate-700/50 p-6 flex flex-col items-center justify-center py-16 text-center">
+        <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4 border border-blue-500/20">
+          <span className="text-2xl">📊</span>
         </div>
+        <h2 className="text-lg font-bold text-white mb-2">Módulo Financiero Completo</h2>
+        <p className="text-slate-400 max-w-md">
+          El análisis detallado de facturación, cuentas por cobrar, cuentas por pagar y reportes contables NIIF estará disponible en la próxima actualización.
+        </p>
       </div>
     </div>
   );

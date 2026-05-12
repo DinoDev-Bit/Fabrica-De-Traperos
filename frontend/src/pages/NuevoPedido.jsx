@@ -2,89 +2,100 @@ import { useState } from 'react';
 import { Save, Plus, Trash2 } from 'lucide-react';
 
 export const NuevoPedido = () => {
-  const [productos, setProductos] = useState([{ id: 1, prod: '', cant: 1, precio: 0 }]);
-
-  const addRow = () => {
-    setProductos([...productos, { id: Date.now(), prod: '', cant: 1, precio: 0 }]);
-  };
-
-  const removeRow = (id) => {
-    if (productos.length > 1) {
-      setProductos(productos.filter(p => p.id !== id));
-    }
-  };
-
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Crear Nuevo Pedido</h1>
-        <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2">
-          <Save size={18} /> Guardar Pedido
+        <h1 className="text-2xl font-bold text-white">Crear Nuevo Pedido</h1>
+        <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 border border-emerald-500/50">
+          <Save size={20} /> Guardar Pedido
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Información del Cliente</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-            <select className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/20 outline-none">
-              <option value="">Seleccione un cliente...</option>
-              <option value="1">Supermercados Éxito</option>
-              <option value="2">Limpieza Total S.A.</option>
-              <option value="nuevo">+ Agregar nuevo cliente</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Entrega Estimada</label>
-            <input type="date" className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/20 outline-none" />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mb-4 border-b pb-2">
-          <h2 className="text-lg font-bold text-gray-800">Productos</h2>
-          <button onClick={addRow} className="text-sm font-medium text-primary flex items-center gap-1 hover:underline">
-            <Plus size={16} /> Agregar Fila
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          {productos.map((p, index) => (
-            <div key={p.id} className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
-              <span className="text-gray-400 font-bold w-6">{index + 1}.</span>
-              <div className="flex-1">
-                <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none">
-                  <option value="">Seleccione producto...</option>
-                  <option value="1">Trapero Microfibra Pro ($12,500)</option>
-                  <option value="2">Trapero Industrial X ($18,000)</option>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 space-y-6">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50">
+            <h2 className="text-lg font-bold text-white mb-4 border-b border-slate-700/50 pb-2">Datos del Cliente</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-bold text-slate-300 mb-1">Buscar Cliente Registrado</label>
+                <select className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white">
+                  <option>Seleccionar...</option>
+                  <option>Supermercados Éxito</option>
+                  <option>Limpieza Total S.A.</option>
                 </select>
               </div>
-              <div className="w-24">
-                <input type="number" min="1" defaultValue="1" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none text-center" />
+              <div>
+                <label className="block text-sm font-bold text-slate-300 mb-1">Nombre / Razón Social</label>
+                <input type="text" className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-slate-500" placeholder="Ej. Juan Pérez" />
               </div>
-              <div className="w-32 font-medium text-gray-800 text-right">
-                $0
+              <div>
+                <label className="block text-sm font-bold text-slate-300 mb-1">NIT / CC</label>
+                <input type="text" className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-slate-500" placeholder="Documento" />
               </div>
-              <button onClick={() => removeRow(p.id)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors">
-                <Trash2 size={18} />
+              <div className="col-span-2">
+                <label className="block text-sm font-bold text-slate-300 mb-1">Dirección de Entrega</label>
+                <input type="text" className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-slate-500" placeholder="Dirección completa" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50">
+            <div className="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
+              <h2 className="text-lg font-bold text-white">Productos</h2>
+              <button className="text-sm text-blue-400 font-bold hover:text-blue-300 flex items-center gap-1 transition-colors">
+                <Plus size={16} /> Añadir Producto
               </button>
             </div>
-          ))}
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
+                <select className="flex-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm">
+                  <option>Trapero Microfibra Pro - $12,500</option>
+                  <option>Trapero Industrial X - $18,000</option>
+                </select>
+                <input type="number" defaultValue="1" min="1" className="w-20 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white text-center" />
+                <button className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                  <Trash2 size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-8 border-t pt-4 flex justify-end">
-          <div className="w-64">
-            <div className="flex justify-between py-2 text-sm text-gray-600">
-              <span>Subtotal:</span>
-              <span>$0</span>
+        <div className="space-y-6">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50">
+            <h2 className="text-lg font-bold text-white mb-4 border-b border-slate-700/50 pb-2">Resumen</h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between text-slate-300">
+                <span>Subtotal</span>
+                <span className="font-medium">$12,500</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>IVA (19%)</span>
+                <span className="font-medium">$2,375</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Envío</span>
+                <span className="font-medium">$5,000</span>
+              </div>
+              <div className="pt-3 mt-3 border-t border-slate-700/50 flex justify-between items-center">
+                <span className="font-bold text-white">Total</span>
+                <span className="font-bold text-2xl text-emerald-400">$19,875</span>
+              </div>
             </div>
-            <div className="flex justify-between py-2 text-sm text-gray-600">
-              <span>Impuestos (19%):</span>
-              <span>$0</span>
-            </div>
-            <div className="flex justify-between py-3 text-lg font-bold text-gray-800 border-t mt-2">
-              <span>Total:</span>
-              <span>$0</span>
+          </div>
+
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700/50">
+            <h2 className="text-lg font-bold text-white mb-4 border-b border-slate-700/50 pb-2">Detalles Adicionales</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-slate-300 mb-1">Fecha de Entrega</label>
+                <input type="date" className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-300 mb-1">Notas</label>
+                <textarea className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-slate-500" rows="3" placeholder="Instrucciones especiales..."></textarea>
+              </div>
             </div>
           </div>
         </div>
