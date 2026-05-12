@@ -121,14 +121,11 @@ export const Login = () => {
           </form>
           
           <div className="mt-8 text-center pt-6 border-t border-slate-700/50">
-            <p className="text-sm text-slate-400 mb-3">
+            <p className="text-sm text-slate-400">
               ¿No tienes una cuenta?{' '}
               <Link to="/register" className="font-bold text-blue-400 hover:text-blue-300 transition-colors">
                 Regístrate aquí
               </Link>
-            </p>
-            <p className="text-xs text-slate-500">
-              Usuario de prueba: <strong className="text-slate-300">emilys</strong> / <strong className="text-slate-300">emilyspass</strong>
             </p>
           </div>
         </div>

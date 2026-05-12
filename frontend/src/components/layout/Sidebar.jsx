@@ -7,7 +7,8 @@ import {
   Wallet, 
   Archive, 
   Users, 
-  LogOut 
+  LogOut,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -19,6 +20,7 @@ const SECTIONS = [
   { id: 'contabilidad', path: '/contabilidad', label: 'Contabilidad', icon: Wallet, roles: ['admin'] },
   { id: 'inventario', path: '/inventario', label: 'Inventario', icon: Archive, roles: ['admin'] },
   { id: 'clientes', path: '/clientes', label: 'Clientes', icon: Users, roles: ['admin', 'editor'] },
+  { id: 'config', path: '/configuracion', label: 'Configuración', icon: Settings, roles: ['admin', 'editor', 'viewer'] },
 ];
 
 export const Sidebar = () => {

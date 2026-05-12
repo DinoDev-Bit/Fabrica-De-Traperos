@@ -100,6 +100,19 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const updateUser = (newData) => {
+    const updatedUser = { ...user, ...newData };
+    setUser(updatedUser);
+    
+    // Si es un usuario local, guardar en localStorage también
+    const token = localStorage.getItem('token');
+    if (token && token.startsWith('local_token_')) {
+      const localData = JSON.parse(localStorage.getItem('localUserData') || '{}');
+      const newLocalData = { ...localData, ...newData };
+      localStorage.setItem('localUserData', JSON.stringify(newLocalData));
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('localUserData');
@@ -108,7 +121,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginLocal, loginApi, logout, loading }}>
+    <AuthContext.Provider value={{ user, loginLocal, loginApi, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );
