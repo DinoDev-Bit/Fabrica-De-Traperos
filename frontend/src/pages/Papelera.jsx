@@ -5,7 +5,7 @@ import { Trash2, Lock, ShieldAlert, RefreshCcw, AlertTriangle } from 'lucide-rea
 
 export const Papelera = () => {
   const { user } = useAuth();
-  const { pedidosEliminados, restaurarDePapelera } = useData();
+  const { pedidosEliminados, restaurarDePapelera, eliminarDefinitivamente } = useData();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -100,16 +100,28 @@ export const Papelera = () => {
                     <td className="p-4 font-bold text-slate-400">${pedido.total.toLocaleString()}</td>
                     <td className="p-4 text-slate-500 text-sm">{pedido.fechaEliminacion}</td>
                     <td className="p-4 text-right">
-                      <button 
-                        onClick={() => {
-                          if(window.confirm('¿Deseas restaurar este pedido? Volverá a la lista activa.')) {
-                            restaurarDePapelera(pedido.id);
-                          }
-                        }}
-                        className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 ml-auto transition-all"
-                      >
-                        <RefreshCcw size={16} /> Restaurar
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => {
+                            if(window.confirm('¿Deseas restaurar este pedido? Volverá a la lista activa.')) {
+                              restaurarDePapelera(pedido.id);
+                            }
+                          }}
+                          className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-all"
+                        >
+                          <RefreshCcw size={16} /> Restaurar
+                        </button>
+                        <button 
+                          onClick={() => {
+                            if(window.confirm('¿Estás SEGURO de eliminar este pedido para siempre? Esta acción no se puede deshacer.')) {
+                              eliminarDefinitivamente(pedido.id);
+                            }
+                          }}
+                          className="bg-red-500/10 text-red-400 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-all"
+                        >
+                          <Trash2 size={16} /> Eliminar
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

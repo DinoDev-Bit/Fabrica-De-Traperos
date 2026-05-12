@@ -16,6 +16,7 @@ export const Inventario = () => {
     material: '',
     precio: '',
     stock: '',
+    imagen: ''
   });
 
   const FILTROS = ['Todos', 'Trapero', 'Escoba', 'Rastrillo', 'Recogedor', 'Otro'];
@@ -36,12 +37,24 @@ export const Inventario = () => {
         material: prod.material,
         precio: prod.precio,
         stock: prod.stock,
+        imagen: prod.imagen || ''
       });
     } else {
       setEditingProduct(null);
-      setFormData({ nombre: '', tipo: 'Trapero', material: '', precio: '', stock: '' });
+      setFormData({ nombre: '', tipo: 'Trapero', material: '', precio: '', stock: '', imagen: '' });
     }
     setIsModalOpen(true);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, imagen: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -146,12 +159,17 @@ export const Inventario = () => {
               <tbody className="divide-y divide-slate-700/50">
                 {filteredProducts.map(prod => (
                   <tr key={prod.id} className="hover:bg-slate-700/20 transition-colors">
-                    <td className="p-4">
+                    <td className="p-4 flex items-center gap-3">
+                      {prod.imagen ? (
+                        <img src={prod.imagen} alt={prod.nombre} className="w-10 h-10 rounded-md object-cover border border-slate-700" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-md bg-slate-700/50 border border-slate-600 flex items-center justify-center text-slate-400 text-xs">Sin Img</div>
+                      )}
                       <span className="font-bold text-slate-200">{prod.nombre}</span>
                     </td>
                     <td className="p-4">
                       <p className="text-sm font-medium text-slate-300">{prod.tipo}</p>
-                      <p className="text-xs text-slate-500">{prod.material}</p>
+                      <p className="text-xs text-slate-500">{prod.material || 'N/A'}</p>
                     </td>
                     <td className="p-4 font-bold text-emerald-400">${prod.precio.toLocaleString()}</td>
                     <td className="p-4 text-slate-300 font-medium">{prod.stock} und.</td>
@@ -181,14 +199,26 @@ export const Inventario = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md overflow-hidden">
-            <div className="flex justify-between items-center p-5 border-b border-slate-700/50 bg-slate-800/80">
+          <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-5 border-b border-slate-700/50 bg-slate-800/80 sticky top-0 z-10">
               <h2 className="text-xl font-bold text-white">{editingProduct ? 'Editar Producto' : 'Nuevo Producto'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white transition-colors">
                 <X size={24} />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  {formData.imagen ? (
+                    <img src={formData.imagen} alt="Preview" className="w-24 h-24 rounded-xl object-cover border-2 border-blue-500/50" />
+                  ) : (
+                    <div className="w-24 h-24 rounded-xl bg-slate-900 border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-500">
+                      <span className="text-xs">Sin Imagen</span>
+                    </div>
+                  )}
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" title="Subir Imagen" />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-bold text-slate-300 mb-1">Nombre del Producto</label>
                 <input type="text" required value={formData.nombre} onChange={(e) => setFormData({...formData, nombre: e.target.value})} className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm" />
@@ -201,8 +231,8 @@ export const Inventario = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-1">Material</label>
-                  <input type="text" required value={formData.material} onChange={(e) => setFormData({...formData, material: e.target.value})} className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm" />
+                  <label className="block text-sm font-bold text-slate-300 mb-1">Material (Opcional)</label>
+                  <input type="text" value={formData.material} onChange={(e) => setFormData({...formData, material: e.target.value})} className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm" placeholder="Ej: Madera" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-300 mb-1">Precio Unitario ($)</label>

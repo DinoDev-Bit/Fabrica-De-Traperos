@@ -152,6 +152,11 @@ export const DataProvider = ({ children }) => {
     addNotificacion(`Pedido ${id} restaurado`, 'success');
   };
 
+  const eliminarDefinitivamente = (id) => {
+    setPedidosEliminados(prev => prev.filter(p => p.id !== id));
+    addNotificacion(`Pedido ${id} eliminado permanentemente`, 'warning');
+  };
+
   // Funciones de Clientes
   const addCliente = (cliente) => {
     setClientes(prev => [{ ...cliente, id: `CL-${Date.now().toString().slice(-4)}`, status: 'Activo', pedidos: 0, totalComprado: 0 }, ...prev]);
@@ -172,7 +177,7 @@ export const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider value={{
       productos, addProducto, updateProducto, deleteProducto,
-      pedidos, pedidosEliminados, addPedido, marcarPedidoCompletado, moverAPapelera, restaurarDePapelera,
+      pedidos, pedidosEliminados, addPedido, marcarPedidoCompletado, moverAPapelera, restaurarDePapelera, eliminarDefinitivamente,
       clientes, addCliente, updateCliente, deleteCliente,
       notificaciones, addNotificacion, limpiarNotificaciones
     }}>

@@ -77,9 +77,13 @@ export const Catalogo = () => {
           {filteredProducts.map(prod => (
             <div key={prod.id} className="bg-slate-800 rounded-2xl overflow-hidden shadow-lg border border-slate-700/50 hover:border-blue-500/50 hover:shadow-blue-500/10 transition-all group">
               <div className="h-40 bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center relative overflow-hidden">
-                <div className="text-6xl group-hover:scale-110 transition-transform duration-300">
-                  {getIcon(prod.tipo)}
-                </div>
+                {prod.imagen ? (
+                  <img src={prod.imagen} alt={prod.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <div className="text-6xl group-hover:scale-110 transition-transform duration-300">
+                    {getIcon(prod.tipo)}
+                  </div>
+                )}
                 <div className="absolute top-3 right-3">
                   <span className={`px-2.5 py-1 text-[10px] uppercase font-bold rounded-full border backdrop-blur-md ${
                     prod.estado === 'En Stock' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
