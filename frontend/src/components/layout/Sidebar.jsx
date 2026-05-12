@@ -17,17 +17,17 @@ import {
 import { useAuth } from '../../context/AuthContext';
 
 const SECTIONS = [
-  { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer', 'cliente'] },
-  { id: 'catalogo', path: '/catalogo', label: 'Catálogo', icon: Package, roles: ['admin', 'editor', 'viewer', 'cliente'] },
-  { id: 'preventa', path: '/preventa', label: 'Preventa', icon: ClipboardList, roles: ['admin', 'editor'] },
-  { id: 'pedidos', path: '/pedidos', label: 'Lista de Pedidos', icon: ListTodo, roles: ['admin', 'editor'] },
+  { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'vendedor', 'cliente'] },
+  { id: 'catalogo', path: '/catalogo', label: 'Catálogo', icon: Package, roles: ['admin', 'vendedor', 'cliente'] },
+  { id: 'preventa', path: '/preventa', label: 'Preventa', icon: ClipboardList, roles: ['admin', 'vendedor'] },
+  { id: 'pedidos', path: '/pedidos', label: 'Lista de Pedidos', icon: ListTodo, roles: ['admin', 'vendedor'] },
   { id: 'papelera', path: '/papelera', label: 'Papelera', icon: Trash2, roles: ['admin'] },
-  { id: 'nuevo-pedido', path: '/nuevo-pedido', label: 'Crear Pedido', icon: PlusSquare, roles: ['admin', 'editor', 'viewer', 'cliente'] },
+  { id: 'nuevo-pedido', path: '/nuevo-pedido', label: 'Crear Pedido', icon: PlusSquare, roles: ['admin', 'vendedor', 'cliente'] },
   { id: 'contabilidad', path: '/contabilidad', label: 'Contabilidad', icon: Wallet, roles: ['admin'] },
   { id: 'inventario', path: '/inventario', label: 'Inventario', icon: Archive, roles: ['admin'] },
-  { id: 'clientes', path: '/clientes', label: 'Clientes', icon: Users, roles: ['admin', 'editor'] },
+  { id: 'clientes', path: '/clientes', label: 'Clientes', icon: Users, roles: ['admin', 'vendedor'] },
   { id: 'roles', path: '/roles', label: 'Roles', icon: Shield, roles: ['admin'] },
-  { id: 'config', path: '/configuracion', label: 'Configuración', icon: Settings, roles: ['admin', 'editor', 'viewer', 'cliente'] },
+  { id: 'config', path: '/configuracion', label: 'Configuración', icon: Settings, roles: ['admin', 'vendedor', 'cliente'] },
 ];
 
 export const Sidebar = () => {

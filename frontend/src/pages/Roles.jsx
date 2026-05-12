@@ -18,7 +18,7 @@ export const Roles = () => {
     );
   }
 
-  const FILTROS = ['Todos', 'admin', 'cliente', 'viewer', 'editor'];
+  const FILTROS = ['Todos', 'admin', 'vendedor', 'cliente'];
 
   const filteredUsers = useMemo(() => {
     return usersList.filter(u => {
@@ -122,14 +122,13 @@ export const Roles = () => {
                           onChange={(e) => handleRoleChange(u.email, e.target.value)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase border outline-none cursor-pointer transition-colors ${
                             u.role === 'admin' ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20' :
-                            u.role === 'editor' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20' :
-                            u.role === 'viewer' ? 'bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20' :
+                            u.role === 'vendedor' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20' :
+                            u.role === 'cliente' ? 'bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20' :
                             'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700'
                           }`}
                         >
                           <option value="admin">Admin</option>
-                          <option value="editor">Editor</option>
-                          <option value="viewer">Viewer</option>
+                          <option value="vendedor">Vendedor</option>
                           <option value="cliente">Cliente</option>
                         </select>
                       )}
