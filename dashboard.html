@@ -121,6 +121,45 @@
         .role-admin { background-color: #28a745; }
         .role-editor { background-color: #007bff; }
         .role-viewer { background-color: #6c757d; }
+
+        .permissions-test {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .permissions-test h3 {
+            margin-top: 0;
+            color: #0f3460;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        .test-case {
+            margin: 0.4rem 0;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            background: white;
+            border: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+        }
+        .icon-success {
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .icon-error {
+            color: #dc3545;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -138,6 +177,11 @@
             <p><strong>Email:</strong> <span id="user-email"></span></p>
             <p><strong>Departamento:</strong> <span id="user-department"></span></p>
             <p><strong>Rol:</strong> <span id="user-role" class="role-badge"></span></p>
+        </div>
+
+        <div class="permissions-test" id="permissions-results">
+            <h3>Prueba de Permisos</h3>
+            <div id="test-list"></div>
         </div>
 
         <button id="logout-btn">Cerrar sesión</button>
@@ -245,6 +289,52 @@
                 window.location.replace('index.html');
             });
         }
+
+        // --- PASO 1: Tabla de permisos ---
+        const PERMISOS = {
+            admin:  ['ver_usuarios', 'editar_usuarios', 'eliminar_usuarios', 'ver_reportes', 'configurar_sistema'],
+            editor: ['ver_usuarios', 'editar_usuarios', 'ver_reportes'],
+            viewer: ['ver_usuarios']
+        };
+
+        // --- PASO 2: Función checkPermission ---
+        // Diferencia clave entre 401 y 403:
+        // 401 (Unauthorized / No Autenticado): El servidor no sabe quién eres. Ej: No enviaste token o expiró.
+        // 403 (Forbidden / No Autorizado): El servidor sabe quién eres (estás autenticado), pero tu ROL no tiene permiso para realizar esta acción.
+        function checkPermission(rol, accion) {
+            // Si el rol no existe, denegar
+            if (!PERMISOS[rol]) return false;
+            
+            // Si la acción está en la lista de permisos del rol, permitir
+            if (PERMISOS[rol].includes(accion)) return true;
+            
+            // Si no pasa la validación anterior, denegar
+            return false;
+        }
+
+        // --- PASO 3: Probar los 6 casos y mostrarlos en pantalla ---
+        const casosPrueba = [
+            { rol: 'admin', accion: 'eliminar_usuarios', esperado: true },
+            { rol: 'editor', accion: 'eliminar_usuarios', esperado: false },
+            { rol: 'viewer', accion: 'ver_reportes', esperado: false },
+            { rol: 'admin', accion: 'configurar_sistema', esperado: true },
+            { rol: 'viewer', accion: 'ver_usuarios', esperado: true },
+            { rol: 'fantasma', accion: 'ver_usuarios', esperado: false }
+        ];
+
+        const testList = document.getElementById('test-list');
+        casosPrueba.forEach(caso => {
+            const resultado = checkPermission(caso.rol, caso.accion);
+            
+            const div = document.createElement('div');
+            div.className = 'test-case';
+            
+            const icon = resultado ? '<span class="icon-success">✓</span>' : '<span class="icon-error">✗</span>';
+            const textoStatus = resultado ? 'PERMITIDO' : 'DENEGADO';
+            
+            div.innerHTML = `${icon} <span><strong>${caso.rol}</strong> intenta <em>${caso.accion}</em> &rarr; <strong>${textoStatus}</strong></span>`;
+            testList.appendChild(div);
+        });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
             eraseCookie('token');
