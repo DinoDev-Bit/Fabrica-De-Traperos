@@ -160,6 +160,65 @@
             margin-right: 0.5rem;
             font-size: 1.2rem;
         }
+
+        .dynamic-menu {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .dynamic-menu h3 {
+            margin-top: 0;
+            color: #0f3460;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        .menu-item {
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+        .menu-allowed {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .menu-denied {
+            background-color: #e9ecef;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        .menu-badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        .role-selector {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .role-selector select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -182,6 +241,20 @@
         <div class="permissions-test" id="permissions-results">
             <h3>Prueba de Permisos</h3>
             <div id="test-list"></div>
+        </div>
+
+        <div class="role-selector">
+            <label for="simulate-role"><strong>Simular Rol (Demo):</strong></label>
+            <select id="simulate-role">
+                <option value="admin">Admin</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+            </select>
+        </div>
+
+        <div class="dynamic-menu">
+            <h3>Menú Dinámico</h3>
+            <div id="menu-container"></div>
         </div>
 
         <button id="logout-btn">Cerrar sesión</button>
@@ -219,6 +292,10 @@
             const roleElement = document.getElementById('user-role');
             roleElement.textContent = 'admin';
             roleElement.className = 'role-badge role-admin';
+            
+            // Inicializar menú para usuario local
+            document.getElementById('simulate-role').value = 'admin';
+            if (typeof renderMenu === 'function') renderMenu('admin');
             
             document.getElementById('user-avatar').src = localUser.image;
         } else {
@@ -277,6 +354,10 @@
                 roleElement.textContent = simulatedRole;
                 roleElement.className = `role-badge ${badgeClass}`;
 
+                // Inicializar menú para usuario API
+                document.getElementById('simulate-role').value = simulatedRole;
+                if (typeof renderMenu === 'function') renderMenu(simulatedRole);
+
                 document.getElementById('user-avatar').src = data.image;
             })
             .catch(error => {
@@ -334,6 +415,60 @@
             
             div.innerHTML = `${icon} <span><strong>${caso.rol}</strong> intenta <em>${caso.accion}</em> &rarr; <strong>${textoStatus}</strong></span>`;
             testList.appendChild(div);
+        });
+
+        // --- SECCIONES DE LA APP ---
+        const SECCIONES = [
+            { id: 'usuarios',   label: 'Usuarios',          icono: '👥', roles: ['admin', 'editor', 'viewer'] },
+            { id: 'reportes',   label: 'Reportes',           icono: '📊', roles: ['admin', 'editor'] },
+            { id: 'editar',     label: 'Editar contenido',   icono: '✏️', roles: ['admin', 'editor'] },
+            { id: 'eliminar',   label: 'Eliminar registros', icono: '🗑️', roles: ['admin'] },
+            { id: 'config',     label: 'Configuración',      icono: '⚙️', roles: ['admin'] }
+        ];
+
+        // --- FUNCIÓN RENDER MENU ---
+        // IMPORTANTE: Diferencia entre ocultar/deshabilitar en Frontend vs Validar en Backend
+        // - Frontend (display:none o deshabilitar visualmente): Es SOLO para mejorar la Experiencia de Usuario (UX). 
+        //   Un usuario con conocimientos técnicos puede modificar el DOM o usar la consola para hacer clic en elementos ocultos.
+        // - Backend: Es la ÚNICA validación segura. El servidor debe verificar siempre los permisos en cada petición HTTP,
+        //   y retornar un error 403 si el usuario intenta hacer algo no permitido, sin importar lo que muestre el Frontend.
+        function renderMenu(rolActual) {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = ''; // Limpiar el menú anterior
+
+            SECCIONES.forEach(seccion => {
+                const isAllowed = seccion.roles.includes(rolActual);
+                
+                const div = document.createElement('div');
+                div.className = `menu-item ${isAllowed ? 'menu-allowed' : 'menu-denied'}`;
+                
+                let badgeText = '';
+                if (seccion.roles.length === 1 && seccion.roles.includes('admin')) {
+                    badgeText = 'Solo Admin';
+                } else if (seccion.roles.includes('admin') && seccion.roles.includes('editor') && !seccion.roles.includes('viewer')) {
+                    badgeText = 'Admin y Editor';
+                } else {
+                    badgeText = 'Todos';
+                }
+
+                div.innerHTML = `
+                    <span>${seccion.icono} ${seccion.label}</span>
+                    <span class="menu-badge">${badgeText}</span>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        // Evento para cambiar el rol y simular dinámicamente
+        document.getElementById('simulate-role').addEventListener('change', (e) => {
+            const nuevoRol = e.target.value;
+            renderMenu(nuevoRol);
+            
+            // Actualizar visualmente el badge principal del usuario
+            const roleElement = document.getElementById('user-role');
+            roleElement.textContent = nuevoRol;
+            roleElement.className = `role-badge role-${nuevoRol}`;
         });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
