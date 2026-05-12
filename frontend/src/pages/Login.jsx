@@ -10,7 +10,7 @@ export const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const { loginApi, loginGoogle } = useAuth();
+  const { loginApi, loginGoogle, loginLocal } = useAuth();
   const navigate = useNavigate();
 
   const handleGoogleClick = () => {
@@ -28,6 +28,14 @@ export const Login = () => {
     setLoading(true);
 
     try {
+      // Intentar login local primero
+      const localSuccess = loginLocal(username, password);
+      if (localSuccess) {
+        navigate('/');
+        return;
+      }
+
+      // Si falla local, intentar API
       const res = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,7 +49,7 @@ export const Login = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Credenciales inválidas');
+        throw new Error('Credenciales inválidas (Local y API)');
       }
 
       loginApi(data.token, data);

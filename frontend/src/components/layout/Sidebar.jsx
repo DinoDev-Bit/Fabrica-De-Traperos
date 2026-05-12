@@ -11,21 +11,23 @@ import {
   Settings,
   ClipboardList,
   ListTodo,
-  Trash2
+  Trash2,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const SECTIONS = [
-  { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer'] },
-  { id: 'catalogo', path: '/catalogo', label: 'Catálogo', icon: Package, roles: ['admin', 'editor', 'viewer'] },
+  { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer', 'cliente'] },
+  { id: 'catalogo', path: '/catalogo', label: 'Catálogo', icon: Package, roles: ['admin', 'editor', 'viewer', 'cliente'] },
   { id: 'preventa', path: '/preventa', label: 'Preventa', icon: ClipboardList, roles: ['admin', 'editor'] },
   { id: 'pedidos', path: '/pedidos', label: 'Lista de Pedidos', icon: ListTodo, roles: ['admin', 'editor'] },
   { id: 'papelera', path: '/papelera', label: 'Papelera', icon: Trash2, roles: ['admin'] },
-  { id: 'nuevo-pedido', path: '/nuevo-pedido', label: 'Crear Pedido', icon: PlusSquare, roles: ['admin', 'editor'] },
+  { id: 'nuevo-pedido', path: '/nuevo-pedido', label: 'Crear Pedido', icon: PlusSquare, roles: ['admin', 'editor', 'viewer', 'cliente'] },
   { id: 'contabilidad', path: '/contabilidad', label: 'Contabilidad', icon: Wallet, roles: ['admin'] },
   { id: 'inventario', path: '/inventario', label: 'Inventario', icon: Archive, roles: ['admin'] },
   { id: 'clientes', path: '/clientes', label: 'Clientes', icon: Users, roles: ['admin', 'editor'] },
-  { id: 'config', path: '/configuracion', label: 'Configuración', icon: Settings, roles: ['admin', 'editor', 'viewer'] },
+  { id: 'roles', path: '/roles', label: 'Roles', icon: Shield, roles: ['admin'] },
+  { id: 'config', path: '/configuracion', label: 'Configuración', icon: Settings, roles: ['admin', 'editor', 'viewer', 'cliente'] },
 ];
 
 export const Sidebar = () => {
@@ -66,6 +68,8 @@ export const Sidebar = () => {
 
         <nav className="space-y-1">
           {SECTIONS.map((section) => {
+            if (!section.roles.includes(user.role)) return null;
+
             const isActive = location.pathname === section.path;
 
             const Icon = section.icon;

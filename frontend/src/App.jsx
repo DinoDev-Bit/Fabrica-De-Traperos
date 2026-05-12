@@ -15,6 +15,8 @@ import { Configuracion } from './pages/Configuracion';
 import { Preventa } from './pages/Preventa';
 import { Papelera } from './pages/Papelera';
 
+import { Roles } from './pages/Roles';
+
 function App() {
   return (
     <HashRouter>
@@ -33,6 +35,7 @@ function App() {
               <Route path="clientes" element={<Clientes />} />
               <Route path="preventa" element={<Preventa />} />
               <Route path="papelera" element={<Papelera />} />
+              <Route path="roles" element={<Roles />} />
               <Route path="configuracion" element={<Configuracion />} />
             </Route>
           </Routes>

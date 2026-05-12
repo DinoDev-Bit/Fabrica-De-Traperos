@@ -11,7 +11,7 @@ export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { loginLocal } = useAuth();
+  const { registerUser } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -34,16 +34,13 @@ export const Register = () => {
       await new Promise(resolve => setTimeout(resolve, 800));
 
       const newUser = {
-        id: Date.now(),
         firstName,
         lastName,
         email,
-        password, 
-        department: 'Local',
-        role: 'admin' 
+        password
       };
 
-      loginLocal(newUser);
+      registerUser(newUser);
       navigate('/');
     } catch (err) {
       setError('Error al crear la cuenta');

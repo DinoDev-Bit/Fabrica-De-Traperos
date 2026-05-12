@@ -7,6 +7,11 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  const [usersList, setUsersList] = useState(() => {
+    const saved = localStorage.getItem('app_registered_users');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     const savedUser = localStorage.getItem('app_user');
@@ -20,47 +25,102 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const loginLocal = (userData) => {
+  useEffect(() => {
+    localStorage.setItem('app_registered_users', JSON.stringify(usersList));
+  }, [usersList]);
+
+  const registerUser = (userData) => {
+    const isMasterAdmin = userData.email === 'rojashenaovictorandres1234@gmail.com';
+    const role = isMasterAdmin ? 'admin' : 'cliente';
+    
     const newUser = {
       ...userData,
-      role: 'admin',
-      department: 'Local'
+      id: Date.now(),
+      role,
+      department: isMasterAdmin ? 'Management' : 'Client'
     };
+
+    setUsersList(prev => [...prev, newUser]);
+    
     localStorage.setItem('app_user', JSON.stringify(newUser));
     setUser(newUser);
+    return true;
+  };
+
+  const loginLocal = (email, password) => {
+    // Buscar el usuario
+    const existingUser = usersList.find(u => u.email === email && u.password === password);
+    if (existingUser) {
+      // Si es el master admin, forzar el rol siempre por si fue cambiado
+      if (existingUser.email === 'rojashenaovictorandres1234@gmail.com') {
+        existingUser.role = 'admin';
+      }
+      localStorage.setItem('app_user', JSON.stringify(existingUser));
+      setUser(existingUser);
+      return true;
+    }
+    return false;
   };
 
   const loginApi = (token, data) => {
-    const department = data.company?.department || 'N/A';
-    let role = 'viewer';
-    if (department === 'Engineering') role = 'admin';
-    else if (department === 'Marketing') role = 'editor';
-
+    // Si inicia sesión por API pero es el master, se fuerza
+    let role = data.email === 'rojashenaovictorandres1234@gmail.com' ? 'admin' : 'cliente';
+    
     const newUser = {
       id: data.id,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
       image: data.image,
-      department,
+      department: data.company?.department || 'N/A',
       role
     };
+    
+    // Check if exists in usersList to preserve role if it was manually assigned
+    const existing = usersList.find(u => u.email === data.email);
+    if (existing && data.email !== 'rojashenaovictorandres1234@gmail.com') {
+      newUser.role = existing.role; // keep custom role
+    }
+
+    if (!existing) {
+      setUsersList(prev => [...prev, newUser]);
+    } else {
+      setUsersList(prev => prev.map(u => u.email === data.email ? { ...u, ...newUser, role: newUser.role } : u));
+    }
+
     localStorage.setItem('app_user', JSON.stringify(newUser));
     setUser(newUser);
   };
 
   const loginGoogle = (email) => {
-    const newUser = {
-      id: 999,
-      firstName: 'Victor',
-      lastName: 'Admin',
+    const isMasterAdmin = email === 'rojashenaovictorandres1234@gmail.com';
+    let role = isMasterAdmin ? 'admin' : 'cliente';
+
+    let userToLogin = {
+      id: Date.now(),
+      firstName: isMasterAdmin ? 'Victor' : 'Usuario',
+      lastName: isMasterAdmin ? 'Admin' : 'Google',
       email: email,
       image: '',
-      department: 'Management',
-      role: 'admin'
+      department: isMasterAdmin ? 'Management' : 'Client',
+      role
     };
-    localStorage.setItem('app_user', JSON.stringify(newUser));
-    setUser(newUser);
+
+    const existing = usersList.find(u => u.email === email);
+    if (existing) {
+      if (!isMasterAdmin) userToLogin.role = existing.role;
+      setUsersList(prev => prev.map(u => u.email === email ? { ...u, ...userToLogin, role: userToLogin.role } : u));
+    } else {
+      setUsersList(prev => [...prev, userToLogin]);
+    }
+
+    localStorage.setItem('app_user', JSON.stringify(userToLogin));
+    setUser(userToLogin);
+  };
+
+  const updateUserRole = (email, newRole) => {
+    if (email === 'rojashenaovictorandres1234@gmail.com') return; // Cannot change master admin role
+    setUsersList(prev => prev.map(u => u.email === email ? { ...u, role: newRole } : u));
   };
 
   const updateUser = (newData) => {
@@ -78,7 +138,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginLocal, loginApi, loginGoogle, logout, updateUser, loading }}>
+    <AuthContext.Provider value={{ user, usersList, loginLocal, registerUser, loginApi, loginGoogle, logout, updateUser, updateUserRole, loading }}>
       {children}
     </AuthContext.Provider>
   );
