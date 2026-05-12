@@ -109,6 +109,18 @@
             from { opacity: 0.6; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1.02); }
         }
+
+        .role-badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .role-admin { background-color: #28a745; }
+        .role-editor { background-color: #007bff; }
+        .role-viewer { background-color: #6c757d; }
     </style>
 </head>
 <body>
@@ -124,7 +136,8 @@
             <img id="user-avatar" src="" alt="Avatar del usuario">
             <p><strong>Nombre completo:</strong> <span id="user-name"></span></p>
             <p><strong>Email:</strong> <span id="user-email"></span></p>
-            <p><strong>Rol / Usuario:</strong> <span id="user-username"></span></p>
+            <p><strong>Departamento:</strong> <span id="user-department"></span></p>
+            <p><strong>Rol:</strong> <span id="user-role" class="role-badge"></span></p>
         </div>
 
         <button id="logout-btn">Cerrar sesión</button>
@@ -157,7 +170,12 @@
             document.getElementById('welcome-message').textContent = `¡Hola, ${localUser.firstName}! 🎉 (Cuenta Local)`;
             document.getElementById('user-name').textContent = `${localUser.firstName} ${localUser.lastName}`;
             document.getElementById('user-email').textContent = localUser.email; // Mostramos el CORREO que registró
-            document.getElementById('user-username').textContent = 'Usuario Local'; 
+            document.getElementById('user-department').textContent = 'Local'; 
+            
+            const roleElement = document.getElementById('user-role');
+            roleElement.textContent = 'admin';
+            roleElement.className = 'role-badge role-admin';
+            
             document.getElementById('user-avatar').src = localUser.image;
         } else {
             // --- LÓGICA DUMMYJSON API ---
@@ -177,10 +195,44 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('dashboard-content').style.display = 'block';
 
+                // --- PASO 1: Decodificar el JWT manualmente ---
+                // En producción, el rol de usuario debe venir incluido dentro del JWT (el payload).
+                // Esto permite saber qué permisos tiene el usuario de forma segura sin tener que 
+                // hacer una petición extra a la base de datos o API.
+                try {
+                    const partesToken = token.split('.');
+                    if (partesToken.length === 3) {
+                        const payloadDecodificado = atob(partesToken[1]);
+                        const tokenData = JSON.parse(payloadDecodificado);
+                        console.log("Contenido del JWT decodificado:", tokenData);
+                    }
+                } catch (e) {
+                    console.error("Error al decodificar JWT", e);
+                }
+
+                // --- PASO 2: Simular el rol según el departamento ---
+                const department = (data.company && data.company.department) ? data.company.department : 'N/A';
+                let simulatedRole = 'viewer';
+                let badgeClass = 'role-viewer';
+
+                if (department === 'Engineering') {
+                    simulatedRole = 'admin';
+                    badgeClass = 'role-admin';
+                } else if (department === 'Marketing') {
+                    simulatedRole = 'editor';
+                    badgeClass = 'role-editor';
+                }
+
+                // --- PASO 3: Mostrar en pantalla ---
                 document.getElementById('welcome-message').textContent = `¡Hola, ${data.firstName}! 🎉`;
                 document.getElementById('user-name').textContent = `${data.firstName} ${data.lastName}`;
                 document.getElementById('user-email').textContent = data.email;
-                document.getElementById('user-username').textContent = data.username;
+                document.getElementById('user-department').textContent = department;
+                
+                const roleElement = document.getElementById('user-role');
+                roleElement.textContent = simulatedRole;
+                roleElement.className = `role-badge ${badgeClass}`;
+
                 document.getElementById('user-avatar').src = data.image;
             })
             .catch(error => {
