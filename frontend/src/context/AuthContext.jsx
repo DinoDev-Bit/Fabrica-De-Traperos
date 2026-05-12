@@ -49,6 +49,20 @@ export const AuthProvider = ({ children }) => {
     setUser(newUser);
   };
 
+  const loginGoogle = (email) => {
+    const newUser = {
+      id: 999,
+      firstName: 'Victor',
+      lastName: 'Admin',
+      email: email,
+      image: '',
+      department: 'Management',
+      role: 'admin'
+    };
+    localStorage.setItem('app_user', JSON.stringify(newUser));
+    setUser(newUser);
+  };
+
   const updateUser = (newData) => {
     const updatedUser = { ...user, ...newData };
     setUser(updatedUser);
@@ -64,7 +78,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginLocal, loginApi, logout, updateUser, loading }}>
+    <AuthContext.Provider value={{ user, loginLocal, loginApi, loginGoogle, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );
