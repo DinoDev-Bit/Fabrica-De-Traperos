@@ -119,12 +119,26 @@ export const DataProvider = ({ children }) => {
     addNotificacion(`Pedido ${id} marcado como completado`, 'success');
   };
 
-  const moverAPapelera = (id) => {
+  const moverAPapelera = (id, devolverStock = false) => {
     const pedido = pedidos.find(p => p.id === id);
     if (!pedido) return;
+    
+    if (devolverStock && pedido.items && pedido.items.length > 0) {
+      setProductos(prevProductos => 
+        prevProductos.map(p => {
+          const itemVendido = pedido.items.find(i => i.producto.id === p.id);
+          if (itemVendido) {
+            const nuevoStock = p.stock + itemVendido.cantidad;
+            return { ...p, stock: nuevoStock, estado: getEstado(nuevoStock) };
+          }
+          return p;
+        })
+      );
+    }
+
     setPedidos(prev => prev.filter(p => p.id !== id));
     setPedidosEliminados(prev => [{ ...pedido, fechaEliminacion: new Date().toLocaleString() }, ...prev]);
-    addNotificacion(`Pedido ${id} enviado a la papelera`, 'warning');
+    addNotificacion(`Pedido ${id} enviado a la papelera. ${devolverStock ? 'Stock devuelto.' : ''}`, 'warning');
   };
 
   const restaurarDePapelera = (id) => {

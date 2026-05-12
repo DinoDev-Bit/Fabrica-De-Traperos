@@ -86,7 +86,10 @@ export const Pedidos = () => {
                         </button>
                         <button 
                           onClick={() => {
-                            if(window.confirm('¿Enviar pedido a la papelera?')) moverAPapelera(pedido.id);
+                            if(window.confirm('¿Deseas enviar este pedido a la papelera?')) {
+                              const devolverStock = window.confirm('¿Deseas conservar los productos y regresarlos al inventario? (Aceptar = Sí, Cancelar = No, se eliminarán)');
+                              moverAPapelera(pedido.id, devolverStock);
+                            }
                           }}
                           title="Eliminar Pedido"
                           className="p-1.5 text-slate-400 hover:text-red-400 rounded-md hover:bg-red-500/10 transition-colors"
