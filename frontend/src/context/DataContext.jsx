@@ -94,10 +94,17 @@ export const DataProvider = ({ children }) => {
     addNotificacion(`Nuevo pedido creado para: ${pedido.cliente}`, 'success');
   };
 
+  const marcarPedidoCompletado = (id) => {
+    setPedidos(prev => prev.map(p => 
+      p.id === id ? { ...p, estado: 'Completado' } : p
+    ));
+    addNotificacion(`Pedido ${id} marcado como completado`, 'success');
+  };
+
   return (
     <DataContext.Provider value={{
       productos, addProducto, updateProducto, deleteProducto,
-      pedidos, addPedido,
+      pedidos, addPedido, marcarPedidoCompletado,
       notificaciones, addNotificacion, limpiarNotificaciones
     }}>
       {children}

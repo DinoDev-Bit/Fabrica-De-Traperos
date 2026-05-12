@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 const SECTIONS = [
   { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'editor', 'viewer'] },
   { id: 'catalogo', path: '/catalogo', label: 'Catálogo', icon: Package, roles: ['admin', 'editor', 'viewer'] },
+  { id: 'preventa', path: '/preventa', label: 'Preventa', icon: ShoppingCart, roles: ['admin', 'editor'] },
   { id: 'pedidos', path: '/pedidos', label: 'Pedidos', icon: ShoppingCart, roles: ['admin', 'editor'] },
   { id: 'nuevo-pedido', path: '/nuevo-pedido', label: 'Crear Pedido', icon: PlusSquare, roles: ['admin', 'editor'] },
   { id: 'contabilidad', path: '/contabilidad', label: 'Contabilidad', icon: Wallet, roles: ['admin'] },

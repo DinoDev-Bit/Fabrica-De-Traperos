@@ -8,11 +8,12 @@ export const Dashboard = () => {
   // Cálculos reales
   const pedidosTotales = pedidos.length;
   
-  // Ingresos totales (sumando el total de todos los pedidos)
-  const ingresosTotales = pedidos.reduce((acc, p) => acc + p.total, 0);
+  // Ingresos totales (sumando solo los completados)
+  const pedidosCompletados = pedidos.filter(p => p.estado === 'Completado');
+  const ingresosTotales = pedidosCompletados.reduce((acc, p) => acc + p.total, 0);
 
   const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
-  const completados = pedidos.filter(p => p.estado === 'Completado').length;
+  const completados = pedidosCompletados.length;
 
   // Productos Top (simulados basados en el stock, o simplemente los primeros 5)
   // En un sistema real, esto se calcularía en base a los items de los pedidos.

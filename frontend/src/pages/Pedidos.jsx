@@ -1,8 +1,8 @@
-import { CheckCircle2, Clock, AlertCircle, Eye } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, Eye, Check } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
 export const Pedidos = () => {
-  const { pedidos } = useData();
+  const { pedidos, marcarPedidoCompletado } = useData();
 
   // Calcular métricas
   const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
@@ -71,9 +71,20 @@ export const Pedidos = () => {
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <button className="p-1.5 text-slate-400 hover:text-blue-400 rounded-md hover:bg-blue-500/10 transition-colors">
-                        <Eye size={18} />
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        {pedido.estado !== 'Completado' && (
+                          <button 
+                            onClick={() => marcarPedidoCompletado(pedido.id)}
+                            title="Completar Pedido"
+                            className="p-1.5 text-slate-400 hover:text-emerald-400 rounded-md hover:bg-emerald-500/10 transition-colors"
+                          >
+                            <Check size={18} />
+                          </button>
+                        )}
+                        <button className="p-1.5 text-slate-400 hover:text-blue-400 rounded-md hover:bg-blue-500/10 transition-colors">
+                          <Eye size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

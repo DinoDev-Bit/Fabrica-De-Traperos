@@ -12,6 +12,7 @@ import { Contabilidad } from './pages/Contabilidad';
 import { Inventario } from './pages/Inventario';
 import { Clientes } from './pages/Clientes';
 import { Configuracion } from './pages/Configuracion';
+import { Preventa } from './pages/Preventa';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="contabilidad" element={<Contabilidad />} />
               <Route path="inventario" element={<Inventario />} />
               <Route path="clientes" element={<Clientes />} />
+              <Route path="preventa" element={<Preventa />} />
               <Route path="configuracion" element={<Configuracion />} />
             </Route>
           </Routes>
