@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, AlertCircle } from 'lucide-react';
 
@@ -105,9 +105,17 @@ export const Login = () => {
             </button>
           </form>
           
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Usuario de prueba: <strong className="text-gray-700">emilys</strong> / <strong className="text-gray-700">emilyspass</strong>
-          </p>
+          <div className="mt-6 text-center border-t border-gray-100 pt-6">
+            <p className="text-sm text-gray-600 mb-3">
+              ¿No tienes una cuenta?{' '}
+              <Link to="/register" className="font-bold text-[#e94560] hover:underline">
+                Regístrate aquí
+              </Link>
+            </p>
+            <p className="text-xs text-gray-500">
+              Usuario de prueba: <strong className="text-gray-700">emilys</strong> / <strong className="text-gray-700">emilyspass</strong>
+            </p>
+          </div>
         </div>
       </div>
     </div>
