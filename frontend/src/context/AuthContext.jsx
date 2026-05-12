@@ -18,15 +18,22 @@ export const AuthProvider = ({ children }) => {
 
     if (token.startsWith('local_token_')) {
       // Logic for local user
-      const localUserData = JSON.parse(localStorage.getItem('localUserData'));
-      if (localUserData) {
-        setUser({
-          ...localUserData,
-          role: 'admin', // Simulated role for local user
-          department: 'Local'
-        });
+      try {
+        const localUserData = JSON.parse(localStorage.getItem('localUserData'));
+        if (localUserData) {
+          setUser({
+            ...localUserData,
+            role: 'admin', // Simulated role for local user
+            department: 'Local'
+          });
+        }
+      } catch (e) {
+        console.error("Error parsing local user data", e);
+        localStorage.removeItem('token');
+        localStorage.removeItem('localUserData');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     } else {
       // Logic for DummyJSON API
       fetch('https://dummyjson.com/auth/me', {
