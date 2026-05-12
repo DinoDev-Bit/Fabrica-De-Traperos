@@ -2,7 +2,7 @@ import { CheckCircle2, Clock, AlertCircle, Eye, Check, Trash2 } from 'lucide-rea
 import { useData } from '../context/DataContext';
 
 export const Pedidos = () => {
-  const { pedidos, marcarPedidoCompletado, moverAPapelera } = useData();
+  const { pedidos, marcarPedidoCompletado, moverAPapelera, showConfirm } = useData();
 
   // Calcular métricas
   const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
@@ -86,10 +86,20 @@ export const Pedidos = () => {
                         </button>
                         <button 
                           onClick={() => {
-                            if(window.confirm('¿Deseas enviar este pedido a la papelera?')) {
-                              const devolverStock = window.confirm('¿Deseas conservar los productos y regresarlos al inventario? (Aceptar = Sí, Cancelar = No, se eliminarán)');
-                              moverAPapelera(pedido.id, devolverStock);
-                            }
+                            showConfirm(
+                              'Enviar a Papelera',
+                              '¿Deseas enviar este pedido a la papelera?',
+                              () => {
+                                showConfirm(
+                                  'Conservar Productos',
+                                  '¿Deseas conservar los productos y regresarlos al inventario? (Sí = Conservar, No = Eliminar también el stock)',
+                                  () => moverAPapelera(pedido.id, true),
+                                  () => moverAPapelera(pedido.id, false),
+                                  'Sí, Conservar',
+                                  'No, Eliminar'
+                                );
+                              }
+                            );
                           }}
                           title="Eliminar Pedido"
                           className="p-1.5 text-slate-400 hover:text-red-400 rounded-md hover:bg-red-500/10 transition-colors"

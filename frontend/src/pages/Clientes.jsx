@@ -3,7 +3,7 @@ import { Search, Mail, Phone, MapPin, Plus, Trash2, X, Save, Edit } from 'lucide
 import { useData } from '../context/DataContext';
 
 export const Clientes = () => {
-  const { clientes, addCliente, updateCliente, deleteCliente } = useData();
+  const { clientes, addCliente, updateCliente, deleteCliente, showConfirm } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCliente, setEditingCliente] = useState(null);
@@ -46,9 +46,14 @@ export const Clientes = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('¿Eliminar este cliente definitivamente?')) {
-      deleteCliente(id);
-    }
+    showConfirm(
+      'Eliminar Cliente',
+      '¿Eliminar este cliente definitivamente?',
+      () => deleteCliente(id),
+      null,
+      'Eliminar',
+      'Cancelar'
+    );
   };
 
   const filteredClientes = useMemo(() => {

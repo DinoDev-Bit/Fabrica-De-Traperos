@@ -3,7 +3,7 @@ import { Search, Plus, Edit, Trash2, Filter, X, Save, PlusCircle, AlertTriangle,
 import { useData } from '../context/DataContext';
 
 export const Inventario = () => {
-  const { productos, addProducto, updateProducto, deleteProducto } = useData();
+  const { productos, addProducto, updateProducto, deleteProducto, showConfirm, showPrompt } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,19 +75,30 @@ export const Inventario = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      deleteProducto(id);
-    }
+    showConfirm(
+      'Eliminar Producto',
+      '¿Estás seguro de que deseas eliminar este producto?',
+      () => deleteProducto(id),
+      null,
+      'Eliminar',
+      'Cancelar'
+    );
   };
 
   const handleAddStock = (prod) => {
-    const amount = window.prompt(`¿Cuántas unidades adicionales de "${prod.nombre}" llegaron?`, "0");
-    const val = parseInt(amount);
-    if (!isNaN(val) && val > 0) {
-      const nuevoStock = prod.stock + val;
-      const productData = { ...prod, stock: nuevoStock, estado: getEstado(nuevoStock) };
-      updateProducto(prod.id, productData);
-    }
+    showPrompt(
+      'Añadir Stock',
+      `¿Cuántas unidades adicionales de "${prod.nombre}" llegaron?`,
+      "0",
+      (amount) => {
+        const val = parseInt(amount);
+        if (!isNaN(val) && val > 0) {
+          const nuevoStock = prod.stock + val;
+          const productData = { ...prod, stock: nuevoStock, estado: getEstado(nuevoStock) };
+          updateProducto(prod.id, productData);
+        }
+      }
+    );
   };
 
   const filteredProducts = useMemo(() => {

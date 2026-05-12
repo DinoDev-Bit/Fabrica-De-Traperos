@@ -31,6 +31,18 @@ export const DataProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [dialog, setDialog] = useState(null);
+
+  const showConfirm = (title, message, onConfirm, onCancel, confirmText = 'Confirmar', cancelText = 'Cancelar') => {
+    setDialog({ type: 'confirm', title, message, onConfirm, onCancel, confirmText, cancelText });
+  };
+
+  const showPrompt = (title, message, defaultValue, onConfirm, onCancel, confirmText = 'Aceptar', cancelText = 'Cancelar') => {
+    setDialog({ type: 'prompt', title, message, defaultValue, onConfirm, onCancel, confirmText, cancelText });
+  };
+
+  const closeDialog = () => setDialog(null);
+
   // Save to localStorage whenever state changes
   useEffect(() => {
     localStorage.setItem('app_productos', JSON.stringify(productos));
@@ -179,7 +191,8 @@ export const DataProvider = ({ children }) => {
       productos, addProducto, updateProducto, deleteProducto,
       pedidos, pedidosEliminados, addPedido, marcarPedidoCompletado, moverAPapelera, restaurarDePapelera, eliminarDefinitivamente,
       clientes, addCliente, updateCliente, deleteCliente,
-      notificaciones, addNotificacion, limpiarNotificaciones
+      notificaciones, addNotificacion, limpiarNotificaciones,
+      dialog, showConfirm, showPrompt, closeDialog
     }}>
       {children}
     </DataContext.Provider>

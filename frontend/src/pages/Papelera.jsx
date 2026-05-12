@@ -5,7 +5,7 @@ import { Trash2, Lock, ShieldAlert, RefreshCcw, AlertTriangle } from 'lucide-rea
 
 export const Papelera = () => {
   const { user } = useAuth();
-  const { pedidosEliminados, restaurarDePapelera, eliminarDefinitivamente } = useData();
+  const { pedidosEliminados, restaurarDePapelera, eliminarDefinitivamente, showConfirm } = useData();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -103,9 +103,11 @@ export const Papelera = () => {
                       <div className="flex justify-end gap-2">
                         <button 
                           onClick={() => {
-                            if(window.confirm('¿Deseas restaurar este pedido? Volverá a la lista activa.')) {
-                              restaurarDePapelera(pedido.id);
-                            }
+                            showConfirm(
+                              'Restaurar Pedido',
+                              '¿Deseas restaurar este pedido? Volverá a la lista activa.',
+                              () => restaurarDePapelera(pedido.id)
+                            );
                           }}
                           className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-all"
                         >
@@ -113,9 +115,14 @@ export const Papelera = () => {
                         </button>
                         <button 
                           onClick={() => {
-                            if(window.confirm('¿Estás SEGURO de eliminar este pedido para siempre? Esta acción no se puede deshacer.')) {
-                              eliminarDefinitivamente(pedido.id);
-                            }
+                            showConfirm(
+                              'Eliminación Definitiva',
+                              '¿Estás SEGURO de eliminar este pedido para siempre? Esta acción no se puede deshacer.',
+                              () => eliminarDefinitivamente(pedido.id),
+                              null,
+                              'Eliminar',
+                              'Cancelar'
+                            );
                           }}
                           className="bg-red-500/10 text-red-400 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-all"
                         >

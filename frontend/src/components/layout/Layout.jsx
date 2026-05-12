@@ -1,6 +1,7 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
+import { GlobalDialog } from '../ui/GlobalDialog';
 import { useAuth } from '../../context/AuthContext';
 
 export const Layout = () => {
@@ -29,6 +30,7 @@ export const Layout = () => {
           </div>
         </main>
       </div>
+      <GlobalDialog />
     </div>
   );
 };
