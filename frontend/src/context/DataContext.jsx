@@ -21,6 +21,16 @@ export const DataProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [pedidosEliminados, setPedidosEliminados] = useState(() => {
+    const saved = localStorage.getItem('app_pedidos_eliminados');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [clientes, setClientes] = useState(() => {
+    const saved = localStorage.getItem('app_clientes');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   // Save to localStorage whenever state changes
   useEffect(() => {
     localStorage.setItem('app_productos', JSON.stringify(productos));
@@ -33,6 +43,14 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('app_notificaciones', JSON.stringify(notificaciones));
   }, [notificaciones]);
+
+  useEffect(() => {
+    localStorage.setItem('app_pedidos_eliminados', JSON.stringify(pedidosEliminados));
+  }, [pedidosEliminados]);
+
+  useEffect(() => {
+    localStorage.setItem('app_clientes', JSON.stringify(clientes));
+  }, [clientes]);
 
   // Helper to add notification
   const addNotificacion = (mensaje, tipo = 'info') => {
@@ -101,10 +119,47 @@ export const DataProvider = ({ children }) => {
     addNotificacion(`Pedido ${id} marcado como completado`, 'success');
   };
 
+  const moverAPapelera = (id) => {
+    const pedido = pedidos.find(p => p.id === id);
+    if (!pedido) return;
+    setPedidos(prev => prev.filter(p => p.id !== id));
+    setPedidosEliminados(prev => [{ ...pedido, fechaEliminacion: new Date().toLocaleString() }, ...prev]);
+    addNotificacion(`Pedido ${id} enviado a la papelera`, 'warning');
+  };
+
+  const restaurarDePapelera = (id) => {
+    const pedido = pedidosEliminados.find(p => p.id === id);
+    if (!pedido) return;
+    setPedidosEliminados(prev => prev.filter(p => p.id !== id));
+    
+    // Quitar la fecha de eliminación para restaurarlo limpio
+    const { fechaEliminacion, ...pedidoRestaurado } = pedido;
+    setPedidos(prev => [pedidoRestaurado, ...prev]);
+    addNotificacion(`Pedido ${id} restaurado`, 'success');
+  };
+
+  // Funciones de Clientes
+  const addCliente = (cliente) => {
+    setClientes(prev => [{ ...cliente, id: `CL-${Date.now().toString().slice(-4)}`, status: 'Activo', pedidos: 0, totalComprado: 0 }, ...prev]);
+    addNotificacion(`Cliente registrado: ${cliente.nombre}`, 'success');
+  };
+
+  const updateCliente = (id, updatedCliente) => {
+    setClientes(prev => prev.map(c => c.id === id ? { ...updatedCliente, id } : c));
+    addNotificacion(`Cliente actualizado: ${updatedCliente.nombre}`, 'info');
+  };
+
+  const deleteCliente = (id) => {
+    const cliente = clientes.find(c => c.id === id);
+    setClientes(prev => prev.filter(c => c.id !== id));
+    if (cliente) addNotificacion(`Cliente eliminado: ${cliente.nombre}`, 'warning');
+  };
+
   return (
     <DataContext.Provider value={{
       productos, addProducto, updateProducto, deleteProducto,
-      pedidos, addPedido, marcarPedidoCompletado,
+      pedidos, pedidosEliminados, addPedido, marcarPedidoCompletado, moverAPapelera, restaurarDePapelera,
+      clientes, addCliente, updateCliente, deleteCliente,
       notificaciones, addNotificacion, limpiarNotificaciones
     }}>
       {children}

@@ -13,6 +13,7 @@ import { Inventario } from './pages/Inventario';
 import { Clientes } from './pages/Clientes';
 import { Configuracion } from './pages/Configuracion';
 import { Preventa } from './pages/Preventa';
+import { Papelera } from './pages/Papelera';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path="inventario" element={<Inventario />} />
               <Route path="clientes" element={<Clientes />} />
               <Route path="preventa" element={<Preventa />} />
+              <Route path="papelera" element={<Papelera />} />
               <Route path="configuracion" element={<Configuracion />} />
             </Route>
           </Routes>

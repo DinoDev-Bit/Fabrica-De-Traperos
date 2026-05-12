@@ -1,8 +1,8 @@
-import { CheckCircle2, Clock, AlertCircle, Eye, Check } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, Eye, Check, Trash2 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
 export const Pedidos = () => {
-  const { pedidos, marcarPedidoCompletado } = useData();
+  const { pedidos, marcarPedidoCompletado, moverAPapelera } = useData();
 
   // Calcular métricas
   const pendientes = pedidos.filter(p => p.estado === 'Pendiente').length;
@@ -83,6 +83,15 @@ export const Pedidos = () => {
                         )}
                         <button className="p-1.5 text-slate-400 hover:text-blue-400 rounded-md hover:bg-blue-500/10 transition-colors">
                           <Eye size={18} />
+                        </button>
+                        <button 
+                          onClick={() => {
+                            if(window.confirm('¿Enviar pedido a la papelera?')) moverAPapelera(pedido.id);
+                          }}
+                          title="Eliminar Pedido"
+                          className="p-1.5 text-slate-400 hover:text-red-400 rounded-md hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 size={18} />
                         </button>
                       </div>
                     </td>

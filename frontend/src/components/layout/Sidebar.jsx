@@ -10,7 +10,8 @@ import {
   LogOut,
   Settings,
   ClipboardList,
-  ListTodo
+  ListTodo,
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -19,6 +20,7 @@ const SECTIONS = [
   { id: 'catalogo', path: '/catalogo', label: 'Catálogo', icon: Package, roles: ['admin', 'editor', 'viewer'] },
   { id: 'preventa', path: '/preventa', label: 'Preventa', icon: ClipboardList, roles: ['admin', 'editor'] },
   { id: 'pedidos', path: '/pedidos', label: 'Lista de Pedidos', icon: ListTodo, roles: ['admin', 'editor'] },
+  { id: 'papelera', path: '/papelera', label: 'Papelera', icon: Trash2, roles: ['admin'] },
   { id: 'nuevo-pedido', path: '/nuevo-pedido', label: 'Crear Pedido', icon: PlusSquare, roles: ['admin', 'editor'] },
   { id: 'contabilidad', path: '/contabilidad', label: 'Contabilidad', icon: Wallet, roles: ['admin'] },
   { id: 'inventario', path: '/inventario', label: 'Inventario', icon: Archive, roles: ['admin'] },
